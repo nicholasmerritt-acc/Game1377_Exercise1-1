@@ -1,3 +1,6 @@
+using System;
+using UnityEngine;
+
 /*
  * Assignment: Rock Paper Scissors Lizard Spock Game
  * 
@@ -9,11 +12,11 @@
  * 1. The player can choose from five options: Rock, Paper, Scissors, Lizard, or Spock by pressing designated buttons in the scene.
  * 2. The computer randomly selects one of the five choices each turn.
  * 3. Game logic determines the winner based on the following rules:
- *    - Rock beats Scissors and Lizard
- *    - Scissors beats Paper and Lizard
- *    - Paper beats Rock and Spock
- *    - Lizard beats Paper and Spock
- *    - Spock beats Scissors and Rock
+ *    - Rock beats Scissors and Lizard  //0, 2, 3   //000, 010, 011
+ *    - Paper beats Rock and Spock      //1, 0, 4   //001, 000, 100
+ *    - Scissors beats Paper and Lizard //2, 1, 3   //010, 001, 011
+ *    - Lizard beats Paper and Spock    //3, 1, 4   //011, 001, 100
+ *    - Spock beats Scissors and Rock   //4, 2, 0   //100, 010, 000
  * 4. Ties occur when both the player and computer choose the same option.
  * 5. All game results (player choice, computer choice, and outcome) should be output using Debug.Log.
  * 6. Use an enum to represent the five choices instead of strings.
@@ -31,30 +34,69 @@
  *
  */
 
-using UnityEngine;
-
-public class RockPaperScissorsGame : MonoBehaviour
+public class RockPaperScissorsGameBasic : MonoBehaviour
 {
-    private string[] choices = { "rock", "paper", "scissors" };
+
+    string[] choices = { "rock", "paper", "scissors", "lizard", "spock" };
 
     public void RockPaperScissors(string playerChoice)
     {
         Debug.Log("You chose: " + playerChoice);
-        
-        string computerChoice = choices[0];
+
+        string computerChoice = choices[UnityEngine.Random.Range(0, choices.Length)];
         Debug.Log("Computer chose: " + computerChoice);
 
-        if (playerChoice == "rock")
+        if (computerChoice == playerChoice)
         {
             Debug.Log("It's a tie! Both chose " + playerChoice);
         }
-        else if (playerChoice == "paper")
+        else
         {
-            Debug.Log("You win! " + playerChoice + " beats " + computerChoice);
+            switch (playerChoice)
+            {
+                //Rock beats Scissors and Lizard
+                case "rock":
+                    CheckWin(playerChoice, computerChoice, "scissors", "lizard");
+                    break;
+                //Paper beats Rock and Spock
+                case "paper":
+                    CheckWin(playerChoice, computerChoice, "rock", "spock");
+                    break;
+                //Scissors beats Paper and Lizard
+                case "scissors":
+                    CheckWin(playerChoice, computerChoice, "paper", "lizard");
+                    break;
+                //Lizard beats Paper and Spock
+                case "lizard":
+                    CheckWin(playerChoice, computerChoice, "paper", "spock");
+                    break;
+                //Spock beats Scissors and Rock
+                case "spock":
+                    CheckWin(playerChoice, computerChoice, "scissors", "rock");
+                    break;
+            }
+        }
+    }
+
+    public void CheckWin(string playerChoice, string computerChoice, string beats1, string beats2)
+    {
+        if (computerChoice == beats1 || computerChoice == beats2)
+        {
+            Win(playerChoice, computerChoice);
         }
         else
         {
-            Debug.Log("You lose! " + computerChoice + " beats " + playerChoice);
+            Lose(playerChoice, computerChoice);
         }
+    }
+
+    public void Win(string playerChoice, string computerChoice)
+    {
+        Debug.Log("You win! " + playerChoice + " beats " + computerChoice);
+    }
+
+    public void Lose(string playerChoice, string computerChoice)
+    {
+        Debug.Log("You lose! " + computerChoice + " beats " + playerChoice);
     }
 }
