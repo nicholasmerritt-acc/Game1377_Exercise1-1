@@ -12,11 +12,11 @@ using UnityEngine;
  * 1. The player can choose from five options: Rock, Paper, Scissors, Lizard, or Spock by pressing designated buttons in the scene.
  * 2. The computer randomly selects one of the five choices each turn.
  * 3. Game logic determines the winner based on the following rules:
- *    - Rock beats Scissors and Lizard  //0, 2, 3   //000, 010, 011
- *    - Paper beats Rock and Spock      //1, 0, 4   //001, 000, 100
- *    - Scissors beats Paper and Lizard //2, 1, 3   //010, 001, 011
- *    - Lizard beats Paper and Spock    //3, 1, 4   //011, 001, 100
- *    - Spock beats Scissors and Rock   //4, 2, 0   //100, 010, 000
+ *    - Rock beats Scissors and Lizard
+ *    - Paper beats Rock and Spock
+ *    - Scissors beats Paper and Lizard
+ *    - Lizard beats Paper and Spock
+ *    - Spock beats Scissors and Rock
  * 4. Ties occur when both the player and computer choose the same option.
  * 5. All game results (player choice, computer choice, and outcome) should be output using Debug.Log.
  * 6. Use an enum to represent the five choices instead of strings.
@@ -33,17 +33,35 @@ using UnityEngine;
  * - Lastly, change the method to use enums instead of strings.
  *
  */
+public enum RPSChoices
+{
+    Rock,       //0
+    Paper,      //1
+    Scissors,   //2
+    Lizard,     //3
+    Spock       //4
+}
 
-public class RockPaperScissorsGameBasic : MonoBehaviour
+public class RockPaperScissorsGame : MonoBehaviour
 {
 
-    string[] choices = { "rock", "paper", "scissors", "lizard", "spock" };
+    //get an array of all values in the choices enum
+    private RPSChoices[] choices = (RPSChoices[])Enum.GetValues(typeof(RPSChoices));
 
-    public void RockPaperScissors(string playerChoice)
+    public void RockPaperScissors(int inputChoice)
     {
+        if (inputChoice < 0 || inputChoice > 4)
+        {
+            Debug.Log("what have you done? invalid enum choice");
+        }
+
+        //we need to cast from an int because Unity won't let us use a custom enum as a parameter and have it show up in the inspector :(
+        RPSChoices playerChoice = (RPSChoices)inputChoice;
+
         Debug.Log("You chose: " + playerChoice);
 
-        string computerChoice = choices[UnityEngine.Random.Range(0, choices.Length)];
+        //choose a random choice from our enum
+        RPSChoices computerChoice = choices[UnityEngine.Random.Range(0, choices.Length)];
         Debug.Log("Computer chose: " + computerChoice);
 
         if (computerChoice == playerChoice)
@@ -55,30 +73,31 @@ public class RockPaperScissorsGameBasic : MonoBehaviour
             switch (playerChoice)
             {
                 //Rock beats Scissors and Lizard
-                case "rock":
-                    CheckWin(playerChoice, computerChoice, "scissors", "lizard");
+                case RPSChoices.Rock:
+                    CheckWin(playerChoice, computerChoice, RPSChoices.Scissors, RPSChoices.Lizard);
                     break;
                 //Paper beats Rock and Spock
-                case "paper":
-                    CheckWin(playerChoice, computerChoice, "rock", "spock");
+                case RPSChoices.Paper:
+                    CheckWin(playerChoice, computerChoice, RPSChoices.Rock, RPSChoices.Spock);
                     break;
                 //Scissors beats Paper and Lizard
-                case "scissors":
-                    CheckWin(playerChoice, computerChoice, "paper", "lizard");
+                case RPSChoices.Scissors:
+                    CheckWin(playerChoice, computerChoice, RPSChoices.Paper, RPSChoices.Lizard);
                     break;
                 //Lizard beats Paper and Spock
-                case "lizard":
-                    CheckWin(playerChoice, computerChoice, "paper", "spock");
+                case RPSChoices.Lizard:
+                    CheckWin(playerChoice, computerChoice, RPSChoices.Paper, RPSChoices.Spock);
                     break;
                 //Spock beats Scissors and Rock
-                case "spock":
-                    CheckWin(playerChoice, computerChoice, "scissors", "rock");
+                case RPSChoices.Spock:
+                    CheckWin(playerChoice, computerChoice, RPSChoices.Scissors, RPSChoices.Rock);
                     break;
             }
         }
     }
 
-    public void CheckWin(string playerChoice, string computerChoice, string beats1, string beats2)
+    //check if the player choice beats the computer choice
+    public void CheckWin(RPSChoices playerChoice, RPSChoices computerChoice, RPSChoices beats1, RPSChoices beats2)
     {
         if (computerChoice == beats1 || computerChoice == beats2)
         {
@@ -90,12 +109,14 @@ public class RockPaperScissorsGameBasic : MonoBehaviour
         }
     }
 
-    public void Win(string playerChoice, string computerChoice)
+    //display win message
+    public void Win(RPSChoices playerChoice, RPSChoices computerChoice)
     {
         Debug.Log("You win! " + playerChoice + " beats " + computerChoice);
     }
 
-    public void Lose(string playerChoice, string computerChoice)
+    //display lose message
+    public void Lose(RPSChoices playerChoice, RPSChoices computerChoice)
     {
         Debug.Log("You lose! " + computerChoice + " beats " + playerChoice);
     }
