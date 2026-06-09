@@ -35,11 +35,12 @@ using UnityEngine;
  */
 public enum RPSChoices
 {
-    Rock,       //0
-    Paper,      //1
-    Scissors,   //2
-    Lizard,     //3
-    Spock       //4
+    Invalid,    //0
+    Rock,       //1
+    Paper,      //2
+    Scissors,   //3
+    Lizard,     //4
+    Spock       //5
 }
 
 public class RockPaperScissorsGame : MonoBehaviour
@@ -50,9 +51,9 @@ public class RockPaperScissorsGame : MonoBehaviour
 
     public void RockPaperScissors(int inputChoice)
     {
-        if (inputChoice < 0 || inputChoice > 4)
+        if (inputChoice <= 0 || inputChoice > (choices.Length - 1))
         {
-            Debug.Log("what have you done? invalid enum choice");
+            Debug.LogError("Invalid enum choice. Somehow we got an int that is not in our enum");
         }
 
         //we need to cast from an int because Unity won't let us use a custom enum as a parameter and have it show up in the inspector :(
@@ -61,7 +62,7 @@ public class RockPaperScissorsGame : MonoBehaviour
         Debug.Log("You chose: " + playerChoice);
 
         //choose a random choice from our enum
-        RPSChoices computerChoice = choices[UnityEngine.Random.Range(0, choices.Length)];
+        RPSChoices computerChoice = choices[UnityEngine.Random.Range(1, choices.Length)];
         Debug.Log("Computer chose: " + computerChoice);
 
         if (computerChoice == playerChoice)
@@ -97,6 +98,7 @@ public class RockPaperScissorsGame : MonoBehaviour
     }
 
     //check if the player choice beats the computer choice
+    //beats1 and beats2 are the choices that lose to the given player choice
     public void CheckWin(RPSChoices playerChoice, RPSChoices computerChoice, RPSChoices beats1, RPSChoices beats2)
     {
         if (computerChoice == beats1 || computerChoice == beats2)
